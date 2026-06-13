@@ -1,0 +1,39 @@
+name: Publicar Javadoc en GitHub Pages
+
+# El "robot" solo se despertará cuando hagamos un push a la rama 'stable'
+on:
+  push:
+    branches:
+      - stable
+
+# Permisos necesarios para que el robot pueda subir la web
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Generar la documentacion Javadoc
+        run: |
+          mkdir -p documentacion
+          javadoc -d documentacion src/main/java/com/tt1/test/*.java
+
+      - name: Preparar los archivos para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './documentacion'
+
+      - name: Desplegar la web en GitHub Pages
+        uses: actions/deploy-pages@v4
