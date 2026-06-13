@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# Le damos permiso de escritura al robot
+permissions:
+  contents: write
+
 jobs:
   test-and-sync:
     runs-on: ubuntu-latest
